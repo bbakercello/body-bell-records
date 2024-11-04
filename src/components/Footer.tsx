@@ -1,38 +1,27 @@
-// src/components/Footer.tsx
-import { FC } from "react";
-import Image from "next/image";
+import React from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
-const Footer: FC = () => {
+const Footer: React.FC = () => {
   return (
-    <footer className="flex flex-col items-center p-4 bg-gray-900 text-gray-400">
-      <div className="flex space-x-4 mb-2">
-        <a
-          href="https://nextjs.org/learn"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:underline"
-        >
-          Learn
-        </a>
-        <a
-          href="https://nextjs.org/docs"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:underline"
-        >
-          Docs
-        </a>
-        <a
-          href="https://vercel.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:underline"
-        >
-          Vercel
-        </a>
-      </div>
-      <p className="text-sm">© 2024 MyApp. All rights reserved.</p>
-    </footer>
+    <div className="bg-neutral-300 h-16 justify-items-center rounded-lg">
+      <ul className="flex justify-around pt-4 text-md">
+        <li>
+          <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}>
+            <Link href="https://www.instagram.com/bodybellrecords/" passHref>
+              <a className="flex justify-center">Instagram</a>
+            </Link>
+          </motion.div>
+        </li>
+        <li>
+          <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}>
+            <Link href="/info" passHref>
+              <a>Learn More</a>
+            </Link>
+          </motion.div>
+        </li>
+      </ul>
+    </div>
   );
 };
 

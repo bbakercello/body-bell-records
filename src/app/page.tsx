@@ -1,62 +1,101 @@
-// pages/index.tsx
-import Image from "next/image";
+// src/app/page.tsx
+import React, { useState } from "react";
+import Link from "next/link";
+import { Listbox, ListboxButton, ListboxOptions, ListboxOption, Transition } from "@headlessui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWpexplorer, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { motion } from "framer-motion";
+import { useRotate } from "../components/Userotate";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 
-export default function Home(): JSX.Element {
+// Define the structure of the page object
+interface Page {
+  id: number;
+  name: string;
+  pathname: string;
+  unavailable: boolean;
+}
+
+// Page variable used in Explore expandable to map over any future links added into array
+const pages: Page[] = [
+  { id: 1, name: "Home", pathname: "/", unavailable: false },
+  { id: 2, name: "About", pathname: "/info", unavailable: false },
+];
+
+const Home: React.FC = () => {
+  const [selectedPage, setSelectedPage] = useState<Page>(pages[0]);
+  const rotate = useRotate(); // Get the rotate MotionValue
+
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="flex flex-col min-h-screen">
       <NavBar />
       
-      <main className="flex flex-col gap-8 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      <main className="flex-grow bg-neutral-200 p-8">
+        <div className="flex justify-between">
+          <div className="flex">
+            <img
+              className="w-16 rounded-full drop-shadow-lg p-1"
+              src="https://i.imgur.com/hdOhoXL.jpg"
+              alt="Logo"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <motion.div
+              style={{ rotate }}
+              animate={{ x: [1, 4, 0.5] }}
+              whileHover={{ scale: 1.1 }}
+            >
+              <Link href="https://www.instagram.com/bodybellrecords/">
+                <a className="flex justify-center w-8 rounded-lg text-2xl m-3">
+                  <FontAwesomeIcon icon={faInstagram} className="pt-3 pb-2" />
+                </a>
+              </Link>
+            </motion.div>
+          </div>
+          <div className="pr-4">
+            <div className="flex flex-row">
+              <Listbox value={selectedPage} onChange={setSelectedPage}>
+                <ListboxButton className="pt-4 text-xl">
+                  Explore <FontAwesomeIcon icon={faWpexplorer} />
+                </ListboxButton>
+                <Transition
+                  enter="transition duration-100 ease-out"
+                  enterFrom="transform scale-95 opacity-0"
+                  enterTo="transform scale-100 opacity-100"
+                  leave="transition duration-75 ease-out"
+                  leaveFrom="transform scale-100 opacity-100"
+                  leaveTo="transform scale-95 opacity-0"
+                >
+                  <ListboxOptions className="pl-2 pt-1">
+                    {pages.map((page) => (
+                      <ListboxOption
+                        key={page.id}
+                        value={page}
+                        disabled={page.unavailable}
+                        className="pt-1 rounded-lg"
+                      >
+                        <motion.div
+                          style={{ rotate }}
+                          animate={{ x: [1, 4, 0.5] }}
+                          whileHover={{ scale: 1.1 }}
+                        >
+                          <Link href={page.pathname}>
+                            <a>{page.name}</a>
+                          </Link>
+                        </motion.div>
+                      </ListboxOption>
+                    ))}
+                  </ListboxOptions>
+                </Transition>
+              </Listbox>
+            </div>
+          </div>
         </div>
+        <div className="bg-slate-900 h-0.5 mt-8"></div>
       </main>
       
       <Footer />
     </div>
   );
-}
+};
+
+export default Home;
