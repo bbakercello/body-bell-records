@@ -10,5 +10,6 @@ export default nextConfig;
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  basePath: isProd ? '/body-bell-records' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/your-repo-name' : '',
+  trailingSlash: true,  // Ensure proper static routing on GitHub Pages
 };
