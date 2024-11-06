@@ -5,3 +5,10 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+
+const isProd = process.env.NODE_ENV === 'production';
+
+module.exports = {
+  basePath: isProd ? '/body-bell-records' : '',
+};
