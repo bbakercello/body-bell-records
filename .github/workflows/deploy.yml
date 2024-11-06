@@ -22,7 +22,7 @@ jobs:
       run: npm install
 
     - name: Build the Next.js app
-      run: npm run deploy  # This will now run build only
+      run: npm run build  # Only runs build, relying on output: 'export'
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
