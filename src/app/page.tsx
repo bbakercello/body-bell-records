@@ -1,99 +1,76 @@
 // src/app/page.tsx
-import React, { useState } from "react";
-import Link from "next/link";
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption, Transition } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWpexplorer, faInstagram } from "@fortawesome/free-brands-svg-icons";
-import { motion } from "framer-motion";
-import { useRotate } from "../components/Userotate";
+"use client";
+
+import React from "react";
+import { motion, Variants } from "framer-motion";
 import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
+import Logo from "../components/Logo";
 
-// Define the structure of the page object
-interface Page {
-  id: number;
-  name: string;
-  pathname: string;
-  unavailable: boolean;
-}
-
-// Page variable used in Explore expandable to map over any future links added into array
-const pages: Page[] = [
-  { id: 1, name: "Home", pathname: "/", unavailable: false },
-  { id: 2, name: "About", pathname: "/info", unavailable: false },
-];
+const draw: Variants = {
+  hidden: { pathLength: 0, opacity: 0 },
+  visible: (i: number) => {
+    const delay = 1 + i * 0.5;
+    return {
+      pathLength: 1,
+      opacity: 1,
+      transition: {
+        pathLength: { delay, type: "spring", duration: 1.5, bounce: 0 },
+        opacity: { delay, duration: 0.01 },
+      },
+    };
+  },
+};
 
 const Home: React.FC = () => {
-  const [selectedPage, setSelectedPage] = useState<Page>(pages[0]);
-  const rotate = useRotate(); // Get the rotate MotionValue
+  const title = "BODY BELL RECORDS";
 
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      
-      <main className="flex-grow bg-neutral-200 p-8">
-        <div className="flex justify-between">
-          <div className="flex">
-            <img
-              className="w-16 rounded-full drop-shadow-lg p-1"
-              src="https://i.imgur.com/hdOhoXL.jpg"
-              alt="Logo"
-            />
-            <motion.div
-              style={{ rotate }}
-              animate={{ x: [1, 4, 0.5] }}
-              whileHover={{ scale: 1.1 }}
+
+      <main className="flex-grow bg-stone-300 p-8 flex flex-col items-center">
+        {/* Logo */}
+        <Logo />
+
+        {/* Enhanced Title Section */}
+        <div className="relative mt-4 flex space-x-1"> {/* Added space between letters */}
+          {title.split("").map((letter, index) => (
+            <motion.span
+              key={index}
+              className="text-5xl font-extrabold text-sky-700"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: index * 0.05 }}
+              style={{
+                display: "inline-block",
+                transform: `rotate(${-2 + index * 0.3}deg) translateY(${index % 2 === 0 ? -3 : 0}px)`,
+              }}
             >
-              <Link href="https://www.instagram.com/bodybellrecords/">
-                <a className="flex justify-center w-8 rounded-lg text-2xl m-3">
-                  <FontAwesomeIcon icon={faInstagram} className="pt-3 pb-2" />
-                </a>
-              </Link>
-            </motion.div>
-          </div>
-          <div className="pr-4">
-            <div className="flex flex-row">
-              <Listbox value={selectedPage} onChange={setSelectedPage}>
-                <ListboxButton className="pt-4 text-xl">
-                  Explore <FontAwesomeIcon icon={faWpexplorer} />
-                </ListboxButton>
-                <Transition
-                  enter="transition duration-100 ease-out"
-                  enterFrom="transform scale-95 opacity-0"
-                  enterTo="transform scale-100 opacity-100"
-                  leave="transition duration-75 ease-out"
-                  leaveFrom="transform scale-100 opacity-100"
-                  leaveTo="transform scale-95 opacity-0"
-                >
-                  <ListboxOptions className="pl-2 pt-1">
-                    {pages.map((page) => (
-                      <ListboxOption
-                        key={page.id}
-                        value={page}
-                        disabled={page.unavailable}
-                        className="pt-1 rounded-lg"
-                      >
-                        <motion.div
-                          style={{ rotate }}
-                          animate={{ x: [1, 4, 0.5] }}
-                          whileHover={{ scale: 1.1 }}
-                        >
-                          <Link href={page.pathname}>
-                            <a>{page.name}</a>
-                          </Link>
-                        </motion.div>
-                      </ListboxOption>
-                    ))}
-                  </ListboxOptions>
-                </Transition>
-              </Listbox>
-            </div>
-          </div>
+              {letter}
+            </motion.span>
+          ))}
         </div>
-        <div className="bg-slate-900 h-0.5 mt-8"></div>
+
+        {/* Optional underline below logo */}
+        <motion.svg
+          width="600"
+          height="10"
+          viewBox="0 0 600 10"
+          initial="hidden"
+          animate="visible"
+          className="mt-4"
+        >
+          <motion.line
+            x1="100"
+            y1="0"
+            x2="500"
+            y2="0"
+            stroke="#148cfc"
+            variants={draw}
+            custom={2}
+          />
+        </motion.svg>
       </main>
-      
-      <Footer />
     </div>
   );
 };
