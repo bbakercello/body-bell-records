@@ -6,8 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
-  },
+    "lint": "next lint",
+    "export": "next export",
+    "deploy": "npm run build && npm run export"
+    },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
