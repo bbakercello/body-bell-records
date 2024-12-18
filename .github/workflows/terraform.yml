@@ -1,0 +1,65 @@
+name: OpenTofu Workflow
+
+on:
+  pull_request:
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - 'backend.tf'
+      - 'provider.tf'
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  opentofu:
+    name: OpenTofu Workflow
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up OpenTofu (alias for Terraform)
+    - name: Setup OpenTofu
+      run: |
+        curl -L https://github.com/opentofu/opentofu/releases/latest/download/opentofu-linux-amd64 -o /usr/local/bin/tofu
+        chmod +x /usr/local/bin/tofu
+
+    # Determine the Environment
+    - name: Set Environment
+      id: env
+      run: |
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          echo "env=prod" >> $GITHUB_ENV
+        else
+          echo "env=dev" >> $GITHUB_ENV
+        fi
+
+    # Initialize OpenTofu
+    - name: OpenTofu Init
+      run: |
+        tofu init
+
+    # Plan Changes
+    - name: OpenTofu Plan
+      run: tofu plan
+
+  apply:
+    name: OpenTofu Apply
+    needs: opentofu
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'main'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup OpenTofu
+      run: |
+        curl -L https://github.com/opentofu/opentofu/releases/latest/download/opentofu-linux-amd64 -o /usr/local/bin/tofu
+        chmod +x /usr/local/bin/tofu
+
+    - name: OpenTofu Apply
+      run: tofu apply -auto-approve -var="environment=prod"
