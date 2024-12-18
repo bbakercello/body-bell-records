@@ -22,15 +22,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Set up OpenTofu (alias for Terraform)
+    # Set up OpenTofu
     - name: Setup OpenTofu
-      run: |
-        curl -L https://github.com/opentofu/opentofu/releases/latest/download/opentofu-linux-amd64 -o /usr/local/bin/tofu
-        chmod +x /usr/local/bin/tofu
-        ls -l /usr/local/bin/tofu
-        file /usr/local/bin/tofu
-        cat /usr/local/bin/tofu
-        /usr/local/bin/tofu --version
+      uses: opentofu/setup-opentofu@v1
+      with:
+        tofu_version: 1.8.7 # Specify version or use "latest"
 
     # Determine the Environment
     - name: Set Environment
@@ -57,17 +53,16 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref_name == 'main'
     steps:
+    # Checkout the code
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # Set up OpenTofu
     - name: Setup OpenTofu
-      run: |
-        curl -L https://github.com/opentofu/opentofu/releases/latest/download/opentofu-linux-amd64 -o /usr/local/bin/tofu
-        chmod +x /usr/local/bin/tofu
-        ls -l /usr/local/bin/tofu
-        file /usr/local/bin/tofu
-        cat /usr/local/bin/tofu
-        /usr/local/bin/tofu --version
+      uses: opentofu/setup-opentofu@v1
+      with:
+        tofu_version: 1.8.7 # Specify version or use "latest"
 
+    # Apply Changes
     - name: OpenTofu Apply
       run: tofu apply -auto-approve -var="environment=prod"
