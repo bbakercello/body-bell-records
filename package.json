@@ -6,12 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+<<<<<<< HEAD
     "lint": "next lint",
     "deploy": "npm run build"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.709.0",
     "@aws-sdk/lib-dynamodb": "^3.709.0",
+=======
+    "lint": "next lint"
+  },
+  "dependencies": {
+>>>>>>> dev
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@headlessui/react": "^2.2.0",

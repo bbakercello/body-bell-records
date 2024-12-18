@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 
+<<<<<<< HEAD
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -11,3 +12,17 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+=======
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+
+
+const isProd = process.env.NODE_ENV === 'production';
+
+module.exports = {
+  basePath: isProd ? '/body-bell-records' : '',
+};
+>>>>>>> dev
