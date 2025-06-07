@@ -53,8 +53,8 @@ jobs:
 
       - name: Build and Push Container
         run: |
-          docker build -t ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
-          docker push ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker build -t ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest .
+          docker push ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
 
       - id: deploy
         name: Deploy to Cloud Run
@@ -62,7 +62,7 @@ jobs:
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
-          image: ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          image: ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
           flags: "--allow-unauthenticated"
 
       - name: Show Output
