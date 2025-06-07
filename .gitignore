@@ -1,4 +1,3 @@
-
 # dependencies
 /node_modules
 /.pnp
@@ -28,7 +27,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# env files (can opt-in for commiting if needed)
+# env files (can opt-in for committing if needed)
 .env*
 
 # vercel
@@ -42,3 +41,9 @@ infrastructure/secrets.tfvars
 # Ignore the .terraform folder and its contents
 infrastructure/.terraform/
 infrastructure/.terraform/
+
+# GCP
+key.json
+*.key
+*.p12
+*.pem
