@@ -10,7 +10,6 @@ env:
   PROJECT_ID: ben-baker-dev
   SERVICE_NAME: body-bell-records
   REGION: us-central1
-  REPOSITORY: us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/body-bell-records
 
 jobs:
   deploy:
@@ -18,6 +17,9 @@ jobs:
     permissions:
       contents: read
       id-token: write
+
+    env:
+      REPOSITORY: us-central1-docker.pkg.dev/ben-baker-dev/body-bell-records
 
     steps:
       - uses: actions/checkout@v4
