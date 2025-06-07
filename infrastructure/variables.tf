@@ -1,15 +1,16 @@
-variable "github_token" {
-  description = "GitHub OAuth token for AWS Amplify"
-  type        = string
-  sensitive   = true
-}
-
-variable "next_public_api_url" {
-  description = "Public API URL for the Next.js app"
+variable "project_id" {
+  description = "The GCP project ID"
   type        = string
 }
 
 variable "region" {
-  description = "AWS region for deployment"
-  default     = "us-east-2"
+  description = "The GCP region"
+  type        = string
+  default     = "us-central1"
+}
+
+variable "app_name" {
+  description = "The name of the application"
+  type        = string
+  default     = "body-bell-records"
 }

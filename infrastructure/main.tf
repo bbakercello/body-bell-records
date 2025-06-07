@@ -1,139 +1,60 @@
-# Provider configuration for AWS
-provider "aws" {
-  region = "us-east-2" # Ensure this matches your desired region
-}
-
-# DynamoDB table for state locking
-resource "aws_dynamodb_table" "terraform_state_lock" {
-  name         = "body-bell-records"
-  billing_mode = "PAY_PER_REQUEST"
-
-  attribute {
-    name = "pk"
-    type = "S"
-  }
-
-  attribute {
-    name = "sk"
-    type = "S"
-  }
-
-  hash_key  = "pk"
-  range_key = "sk"
-
-  point_in_time_recovery {
-    enabled = false
-  }
-
-  stream_enabled = false
-
-  ttl {
-    enabled = false
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-# S3 bucket for Terraform state storage
-resource "aws_s3_bucket" "terraform_state" {
-  bucket = "body-bell-records-tf-state"
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-# Define the ACL as a separate resource
-resource "aws_s3_bucket_acl" "terraform_state_acl" {
-  bucket = aws_s3_bucket.terraform_state.id
-  acl    = "private"
-}
-
-# Define the versioning configuration as a separate resource
-resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
-  bucket = aws_s3_bucket.terraform_state.id
-
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-# Define the server-side encryption configuration as a separate resource
-resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state_encryption" {
-  bucket = aws_s3_bucket.terraform_state.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 5.0"
     }
   }
 }
 
-# Amplify App for Next.js
-resource "aws_amplify_app" "nextjs" {
-  name        = "NextJSApp"
-  repository  = "https://github.com/your-user/your-nextjs-repo" # Replace with your repository URL
-  oauth_token = var.github_token # Store securely
+provider "google" {
+  project = var.project_id
+  region  = var.region
+}
 
-  build_spec = <<EOT
-version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - npm ci --cache .npm --prefer-offline
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: .next
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - .next/cache/**/*
-      - .npm/**/*
-EOT
+# Enable Firestore API
+resource "google_project_service" "firestore" {
+  service            = "firestore.googleapis.com"
+  disable_on_destroy = false
+}
 
-  environment_variables = {
-    NEXT_PUBLIC_API_URL = var.next_public_api_url # Pass environment variable
-    ENVIRONMENT = "production"
+# Create Firestore database
+resource "google_firestore_database" "database" {
+  name        = "(default)"
+  location_id = var.region
+  type        = "FIRESTORE_NATIVE"
+
+  depends_on = [google_project_service.firestore]
+}
+
+# Cloud Run Service
+resource "google_cloud_run_service" "service" {
+  name     = var.app_name
+  location = var.region
+
+  template {
+    spec {
+      containers {
+        image = "gcr.io/${var.project_id}/${var.app_name}:latest"
+
+        env {
+          name  = "FIRESTORE_PROJECT_ID"
+          value = var.project_id
+        }
+      }
+    }
   }
 }
 
-# Amplify Branch for "main"
-resource "aws_amplify_branch" "main" {
-  app_id              = aws_amplify_app.nextjs.id
-  branch_name         = "main"
-  enable_auto_build   = true
-
-  environment_variables = {
-    NEXT_PUBLIC_API_URL = var.next_public_api_url
-    ENVIRONMENT = "production"
-  }
+# Allow unauthenticated access to Cloud Run
+resource "google_cloud_run_service_iam_member" "public" {
+  service  = google_cloud_run_service.service.name
+  location = google_cloud_run_service.service.location
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 }
 
-
-# Outputs for DynamoDB and S3
-output "dynamodb_table_name" {
-  value = aws_dynamodb_table.terraform_state_lock.name
-}
-
-output "dynamodb_table_arn" {
-  value = aws_dynamodb_table.terraform_state_lock.arn
-}
-
-output "s3_bucket_name" {
-  value = aws_s3_bucket.terraform_state.bucket
-}
-
-# Outputs for Amplify App
-output "amplify_app_id" {
-  value = aws_amplify_app.nextjs.id
-}
-
-output "amplify_default_domain" {
-  value = aws_amplify_app.nextjs.default_domain
+# Output the Cloud Run URL
+output "cloud_run_url" {
+  value = google_cloud_run_service.service.status[0].url
 }
