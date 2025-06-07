@@ -10,6 +10,7 @@ env:
   PROJECT_ID: ben-baker-dev
   SERVICE_NAME: body-bell-records
   REGION: us-central1
+  REPOSITORY: us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/body-bell-records
 
 jobs:
   deploy:
@@ -46,12 +47,12 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Authorize Docker push
-        run: gcloud auth configure-docker
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Build and Push Container
         run: |
-          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
-          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker build -t ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
+          docker push ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
 
       - id: deploy
         name: Deploy to Cloud Run
@@ -59,7 +60,7 @@ jobs:
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
-          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          image: ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           flags: "--allow-unauthenticated"
 
       - name: Show Output
