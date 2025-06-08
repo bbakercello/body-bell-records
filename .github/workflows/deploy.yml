@@ -60,9 +60,15 @@ jobs:
         name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: ${{ env.SERVICE_NAME }}
-          region: ${{ env.REGION }}
-          image: ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
+          service: body-bell-records
+          region: us-central1
+          image: us-central1-docker.pkg.dev/ben-baker-dev/body-bell-records/body-bell-records:latest
+          env_vars: |
+            AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}
+            AUTH0_BASE_URL=${{ secrets.AUTH0_BASE_URL }}
+            AUTH0_ISSUER_BASE_URL=${{ secrets.AUTH0_ISSUER_BASE_URL }}
+            AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }}
+            AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}
           flags: "--allow-unauthenticated"
 
       - name: Show Output
