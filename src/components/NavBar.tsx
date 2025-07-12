@@ -2,10 +2,12 @@
 import { FC } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { LoginButton } from './LoginButton';
+import { AdminButton } from './AdminButton';
 
 const NavBar: FC = () => {
   return (
-    <nav className="flex justify-center items-center w-full p-6 bg-stone-200 text-[#212121] shadow-md">
+    <nav className="relative flex justify-center items-center w-full p-6 bg-stone-200 text-[#212121] shadow-md">
       <div className="flex space-x-20">
         {/* MUSIC Link */}
         <motion.div
@@ -26,6 +28,11 @@ const NavBar: FC = () => {
             STORE
           </Link>
         </motion.div>
+      </div>
+
+      <div className="absolute right-6 flex items-center">
+        <AdminButton />
+        <LoginButton />
       </div>
     </nav>
   );
