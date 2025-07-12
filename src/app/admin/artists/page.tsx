@@ -118,13 +118,13 @@ export default function ArtistsPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Artists</h1>
+        <h1 className="text-3xl font-bold" style={{ color: '#000000' }}>Artists</h1>
         {!isAddingArtist && !selectedArtist && (
           <button
             onClick={() => setIsAddingArtist(true)}
-            className="bg-sky-800 text-white px-4 py-2 rounded hover:bg-sky-700"
+            className="bg-sky-600 text-white px-4 py-2 rounded-md hover:bg-sky-700 font-medium"
           >
             Add Artist
           </button>
@@ -132,14 +132,14 @@ export default function ArtistsPage() {
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md mb-4 font-medium">
           {error}
         </div>
       )}
 
       {(isAddingArtist || selectedArtist) ? (
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-6">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-2xl font-bold mb-6" style={{ color: '#000000' }}>
             {selectedArtist ? 'Edit Artist' : 'Add New Artist'}
           </h2>
           <ArtistForm
@@ -152,16 +152,16 @@ export default function ArtistsPage() {
           {artists.map((artist) => (
             <div
               key={artist.id}
-              className="border rounded-lg p-6 bg-white shadow-sm"
+              className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm"
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-2xl font-bold mb-2">{artist.name}</h2>
-                  <p className="text-gray-600 mb-4">{artist.bio}</p>
+                  <h2 className="text-2xl font-bold mb-2" style={{ color: '#000000' }}>{artist.name}</h2>
+                  <p className="mb-4" style={{ color: '#374151' }}>{artist.bio}</p>
                   {artist.members.length > 0 && (
                     <div className="mb-4">
-                      <h3 className="font-semibold mb-2">Members:</h3>
-                      <ul className="list-disc list-inside">
+                      <h3 className="font-semibold mb-2" style={{ color: '#000000' }}>Members:</h3>
+                      <ul className="list-disc list-inside" style={{ color: '#374151' }}>
                         {artist.members.map((member, index) => (
                           <li key={index}>{member}</li>
                         ))}
@@ -170,7 +170,7 @@ export default function ArtistsPage() {
                   )}
                   {Object.keys(artist.socialMedia).length > 0 && (
                     <div>
-                      <h3 className="font-semibold mb-2">Social Media:</h3>
+                      <h3 className="font-semibold mb-2" style={{ color: '#000000' }}>Social Media:</h3>
                       <div className="flex gap-4">
                         {Object.entries(artist.socialMedia).map(([platform, url]) => (
                           <a
@@ -178,7 +178,7 @@ export default function ArtistsPage() {
                             href={url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sky-800 hover:text-sky-600"
+                            className="text-sky-600 hover:text-sky-700 font-medium"
                           >
                             {platform}
                           </a>
@@ -190,13 +190,13 @@ export default function ArtistsPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setSelectedArtist(artist)}
-                    className="text-sky-800 hover:text-sky-600"
+                    className="text-sky-600 hover:text-sky-700 font-medium"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(artist.id)}
-                    className="text-red-600 hover:text-red-800"
+                    className="text-red-600 hover:text-red-700 font-medium"
                   >
                     Delete
                   </button>

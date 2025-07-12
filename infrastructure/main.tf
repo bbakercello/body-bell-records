@@ -54,7 +54,26 @@ resource "google_cloud_run_service_iam_member" "public" {
   member   = "allUsers"
 }
 
+# Domain mapping for custom subdomain
+resource "google_cloud_run_domain_mapping" "domain_mapping" {
+  name     = "bodybellrecords"
+  location = var.region
+
+  metadata {
+    namespace = var.project_id
+  }
+
+  spec {
+    route_name = google_cloud_run_service.service.name
+  }
+}
+
 # Output the Cloud Run URL
 output "cloud_run_url" {
   value = google_cloud_run_service.service.status[0].url
+}
+
+# Output the custom domain URL
+output "custom_domain_url" {
+  value = "https://${google_cloud_run_domain_mapping.domain_mapping.name}.run.app"
 }
